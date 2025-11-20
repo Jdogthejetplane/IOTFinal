@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>IoT Environment Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #020617;
+      --card: #020617;
+      --accent: #38bdf8;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top left, #0f172a, #020617);
+      color: var(--text);
+    }
+    header {
+      padding: 0.8rem 1rem;
+      background: rgba(15,23,42,0.95);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid #1f2937;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+    header p {
+      margin: 0.25rem 0 0;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0.75rem;
+    }
+    .card {
+      border-radius: 0.9rem;
+      overflow: hidden;
+      background: rgba(15,23,42,0.98);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.55);
+      border: 1px solid #1f2937;
+      margin-bottom: 0.85rem;
+    }
+    .card-header {
+      padding: 0.55rem 0.9rem;
+      border-bottom: 1px solid #111827;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .badge {
+      text-transform: uppercase;
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+    }
+
+    /* Iframe sizes */
+    .grafana-frame-main {
+      width: 100%;
+      height: 350px;
+      border: 0;
+      display: block;
+    }
+    .grafana-frame-small {
+      width: 100%;
+      height: 220px;
+      border: 0;
+      display: block;
+    }
+
+    /* Grid for the small cards */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.85rem;
+    }
+    @media (min-width: 900px) {
+      .grafana-frame-main { height: 420px; }
+      .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    footer {
+      text-align: center;
+      padding: 0.6rem;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>IoT Environment Dashboard</h1>
+    <p>Raspberry Pi • MQTT • Prometheus • Grafana</p>
+  </header>
+
+  <div class="container">
+    <!-- Big overview panel -->
+    <div class="card">
+      <div class="card-header">
+        <span class="badge">Overview</span>
+        <span>Temperature &amp; humidity over time</span>
+      </div>
+      <iframe
+        class="grafana-frame-main"
+        src="http://10.183.240.78:3000/d-solo/iot-pi-env-dashboard/iot-e28093-raspberry-pi-environment-dashboard?orgId=1&from=now-15m&to=now&timezone=browser&refresh=5s&panelId=1&__feature.dashboardSceneSolo=true"
+        loading="lazy">
+      </iframe>
+    </div>
+
+    <!-- Grid of smaller widgets -->
+    <div class="grid">
+      <div class="card">
+        <div class="card-header">
+          <span class="badge">Temperature</span>
+          <span>Current °C</span>
+        </div>
+        <iframe
+          class="grafana-frame-small"
+          src="http://10.183.240.78:3000/d-solo/iot-pi-env-dashboard/iot-e28093-raspberry-pi-environment-dashboard?orgId=1&from=now-15m&to=now&timezone=browser&refresh=5s&panelId=2&__feature.dashboardSceneSolo=true"
+          loading="lazy">
+        </iframe>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="badge">Humidity</span>
+          <span>Current %</span>
+        </div>
+        <iframe
+          class="grafana-frame-small"
+          src="http://10.183.240.78:3000/d-solo/iot-pi-env-dashboard/iot-e28093-raspberry-pi-environment-dashboard?orgId=1&from=now-15m&to=now&timezone=browser&refresh=5s&panelId=3&__feature.dashboardSceneSolo=true"
+          loading="lazy">
+        </iframe>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="badge">Sensor age</span>
+          <span>Seconds since last reading</span>
+        </div>
+        <iframe
+          class="grafana-frame-small"
+          src="http://10.183.240.78:3000/d-solo/iot-pi-env-dashboard/iot-e28093-raspberry-pi-environment-dashboard?orgId=1&from=now-15m&to=now&timezone=browser&refresh=5s&panelId=4&__feature.dashboardSceneSolo=true"
+          loading="lazy">
+        </iframe>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="badge">MQTT Status</span>
+          <span>Broker &amp; exporter</span>
+        </div>
+        <iframe
+          class="grafana-frame-small"
+          src="http://10.183.240.78:3000/d-solo/iot-pi-env-dashboard/iot-e28093-raspberry-pi-environment-dashboard?orgId=1&from=now-15m&to=now&timezone=browser&refresh=5s&panelId=5&__feature.dashboardSceneSolo=true"
+          loading="lazy">
+        </iframe>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="badge">Average Temp</span>
+          <span>Over selected range</span>
+        </div>
+        <iframe
+          class="grafana-frame-small"
+          src="http://10.183.240.78:3000/d-solo/iot-pi-env-dashboard/iot-e28093-raspberry-pi-environment-dashboard?orgId=1&from=now-15m&to=now&timezone=browser&refresh=5s&panelId=6&__feature.dashboardSceneSolo=true"
+          loading="lazy">
+        </iframe>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="badge">Average Humidity</span>
+          <span>Over selected range</span>
+        </div>
+        <iframe
+          class="grafana-frame-small"
+          src="http://10.183.240.78:3000/d-solo/iot-pi-env-dashboard/iot-e28093-raspberry-pi-environment-dashboard?orgId=1&from=now-15m&to=now&timezone=browser&refresh=5s&panelId=7&__feature.dashboardSceneSolo=true"
+          loading="lazy">
+        </iframe>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="badge">Temp Status</span>
+          <span>Over selected range</span>
+        </div>
+        <iframe
+          class="grafana-frame-small"
+          src="http://10.183.240.78:3000/d-solo/iot-pi-env-dashboard/iot-e28093-raspberry-pi-environment-dashboard?orgId=1&from=now-15m&to=now&timezone=browser&refresh=5s&panelId=8&__feature.dashboardSceneSolo=true"
+          loading="lazy">
+        </iframe>
+
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    IoT Dashboard
+  </footer>
+</body>
+</html>
