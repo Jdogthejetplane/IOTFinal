@@ -10,10 +10,9 @@ services:
       - "1883:1883"  
       - "9001:9001"   
     volumes:
-      - ./Mosquittobroker/mosquitto.conf:/mosquitto/mosquitto.conf
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:Z
       - mosquitto_data:/mosquitto/data
       - mosquitto_log:/mosquitto/log
-    command: [ "mosquitto", "-c", "/mosquitto/config/mosquitto.conf" ]
     networks:
       - iotnet
 
@@ -59,6 +58,24 @@ services:
       - "8080:80"
     networks:
       - iotnet
+
+  mqtt_exporter:
+    build:
+      context: ./mosquitto
+      dockerfile: Dockerfile
+    container_name: mqtt_exporter
+    restart: unless-stopped
+    environment:
+      - BROKER_HOST=mosquitto
+      - BROKER_PORT=1883
+      - MQTT_TOPIC=iot/sensors/env
+    ports:
+      - "9641:9641"
+    depends_on:
+      - mosquitto
+    networks:
+      - iotnet
+
 
 networks:
   iotnet:

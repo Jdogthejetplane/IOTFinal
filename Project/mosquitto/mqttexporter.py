@@ -3,7 +3,7 @@ import json, time, logging
 from prometheus_client import Gauge, start_http_server
 import paho.mqtt.client as mqtt
 
-BROKER_HOST = "10.183.244.90"
+BROKER_HOST = "10.183.240.83"
 BROKER_PORT = 1883
 MQTT_TOPIC  = "iot/sensors/env"
 
