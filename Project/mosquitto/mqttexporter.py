@@ -3,7 +3,7 @@ import json, time, logging
 from prometheus_client import Gauge, start_http_server
 import paho.mqtt.client as mqtt
 
-BROKER_HOST = "10.183.240.83"
+BROKER_HOST = "mosquitto"
 BROKER_PORT = 1883
 MQTT_TOPIC  = "iot/sensors/env"
 
@@ -25,11 +25,8 @@ def on_disconnect(c,u,rc,props=None):
 def on_message(c,u,msg):
     try:
         d = json.loads(msg.payload.decode())
-
-        # Your payload uses these keys:
-        # "ds18b20_temp_c" and "humidity_percent"
-        if "ds18b20_temp_c" in d and d["ds18b20_temp_c"] is not None:
-            g_t.set(float(d["ds18b20_temp_c"]))
+        if "temp_c" in d and d["temp_c"] is not None:
+            g_t.set(float(d["temp_c"]))
 
         if "humidity_percent" in d and d["humidity_percent"] is not None:
             g_h.set(float(d["humidity_percent"]))
@@ -37,8 +34,6 @@ def on_message(c,u,msg):
         g_seen.set(time.time())
     except Exception as e:
         print("Bad payload:", e)
-
-
 
 if __name__ == "__main__":
     print("[HTTP] Metrics on :9641/metrics")
@@ -54,7 +49,6 @@ if __name__ == "__main__":
     client.connect_async(BROKER_HOST, BROKER_PORT, 60)
     client.loop_start()
 
-    # Keep the process alive
     try:
         while True:
             time.sleep(60)

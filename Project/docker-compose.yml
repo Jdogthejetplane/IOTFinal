@@ -8,7 +8,7 @@ services:
     user: "0:0"
     ports:
       - "1883:1883"  
-      - "9001:9001"   
+      - "9001:9001"
     volumes:
       - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:Z
       - mosquitto_data:/mosquitto/data
@@ -76,6 +76,20 @@ services:
     networks:
       - iotnet
 
+  led_api:                                
+    build:
+      context: ./api                
+      dockerfile: Dockerfile
+    container_name: led_api
+    restart: unless-stopped
+    environment:
+      - MQTT_BROKER=mosquitto              
+    ports:
+      - "5001:5001"                        
+    depends_on:
+      - mosquitto
+    networks:
+      - iotnet
 
 networks:
   iotnet:
