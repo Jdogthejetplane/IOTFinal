@@ -5,11 +5,12 @@ services:
     image: eclipse-mosquitto:2
     container_name: mosquitto
     restart: unless-stopped
+    user: "0:0"
     ports:
       - "1883:1883"  
-      - "9001:9001"   
+      - "9001:9001"
     volumes:
-      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:Z
       - mosquitto_data:/mosquitto/data
       - mosquitto_log:/mosquitto/log
     networks:
@@ -22,7 +23,7 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./Prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
@@ -36,7 +37,7 @@ services:
     container_name: grafana
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "3001:3001"
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
@@ -49,12 +50,44 @@ services:
 
   frontend:
     build:
-      context: ./frontend
+      context: ./Frontend
       dockerfile: Dockerfile
     container_name: iot-frontend
     restart: unless-stopped
     ports:
       - "8080:80"
+    networks:
+      - iotnet
+
+  mqtt_exporter:
+    build:
+      context: ./mosquitto
+      dockerfile: Dockerfile
+    container_name: mqtt_exporter
+    restart: unless-stopped
+    environment:
+      - BROKER_HOST=mosquitto
+      - BROKER_PORT=1883
+      - MQTT_TOPIC=iot/sensors/env
+    ports:
+      - "9641:9641"
+    depends_on:
+      - mosquitto
+    networks:
+      - iotnet
+
+  led_api:                                
+    build:
+      context: ./api                
+      dockerfile: Dockerfile
+    container_name: led_api
+    restart: unless-stopped
+    environment:
+      - MQTT_BROKER=mosquitto              
+    ports:
+      - "5001:5001"                        
+    depends_on:
+      - mosquitto
     networks:
       - iotnet
 
