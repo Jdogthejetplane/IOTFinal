@@ -19,11 +19,10 @@ client.loop_start()
 
 print("Starting MQTT sensor publisher on GPIO17...")
 
-
 def cleanup(*args):
     print("\nCleaning up GPIO and exiting...")
     try:
-        dht_sensor.exit()  # Properly release GPIO17
+        dht_sensor.exit()
     except Exception as e:
         print("Error cleaning up:", e)
 
@@ -33,7 +32,15 @@ def cleanup(*args):
 
 signal.signal(signal.SIGINT, cleanup)
 signal.signal(signal.SIGTERM, cleanup)
+def get_cpu_temp():
+    try:
+        with open("/sys/class/thermal/thermal_zone0/temp", "r") as f:
+            temp_millideg = int(f.read().strip())
+        return temp_millideg / 1000.0
+    except: 
+        return None
 
+    
 while True:
     try:
         humidity = dht_sensor.humidity
@@ -41,11 +48,12 @@ while True:
     except Exception:
         humidity = None
         dht_temp = None
-
+    cpu_temp = get_cpu_temp()
     payload = {
         "timestamp": int(time.time()),
         "temp_c": dht_temp,
-        "humidity_percent": humidity
+        "humidity_percent": humidity,
+        "cpu_temp_c":cpu_temp
     }
 
     print("Published:", payload)
