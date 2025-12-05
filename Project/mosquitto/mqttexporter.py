@@ -11,6 +11,7 @@ g_up   = Gauge("mqtt_up", "1 if connected, else 0")
 g_seen = Gauge("sensor_last_msg_unixtime", "Last message time")
 g_t    = Gauge("sensor_temp_c", "Temperature C")
 g_h    = Gauge("sensor_humidity_percent", "Humidity %")
+g_c    = Gauge("sensor_cpu_temp", "CPU Temp")
 
 def on_connect(c,u,f,rc,props=None):
     print(f"[MQTT] Connected rc={rc}")
@@ -30,6 +31,9 @@ def on_message(c,u,msg):
 
         if "humidity_percent" in d and d["humidity_percent"] is not None:
             g_h.set(float(d["humidity_percent"]))
+
+        if "cpu_temp_c" in d and d["cpu_temp_c"] is not None:
+            g_c.set(float(d["cpu_temp_c"]))
 
         g_seen.set(time.time())
     except Exception as e:
